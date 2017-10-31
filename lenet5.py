@@ -8,9 +8,7 @@ import math
 
 #initial the kernel with random number
 def randomKernel(size):
-	kernel = zeros(size)
-	for x in xrange(size):
-		kernel[x] = random.random()   # Random float x, 0.0 <= x < 1.0
+	kernel = np.random.uniform(-1,1, size)
 	return kernel
 
 
@@ -50,8 +48,10 @@ def convcube(source, kernels, source_size, kernel_size, kernel_depth):
 	feature_map = zeros((len(kernels), (source_size - kernel_size + kernel_size%2)**2 ))
 	for x in xrange(len(kernels)):
 		for y in xrange(kernel_depth):
-			#TODO 1030 get the subarray or the cube kernel
-			feature_map[x] += applyKernel[]
+			# TODO 1030 get the subarray or the cube kernel
+			kernel = kernels[x]
+			layer_kernel = kernel[y*(kernel_size**2): (y+1)*(kernel_size**2)]
+			feature_map[x] += applyKernel(source[y], layer_kernel)
 		
 	return feature_map
 		
@@ -82,6 +82,9 @@ source_size = 28
 kernel_size = 5	#recommend use odd number
 fk_size = 6		#first kernel size
 sk_size = 16	#second kernel size
+first_nodes_size = 120 #amount of first full connection layer nodes 
+second_nodes_size = 84 #amount of second full connection layer nodes
+class_size = 10 #classes number
 
 #input data
 mndata = MNIST('sample')
@@ -120,17 +123,23 @@ C3 = zeros((sk_size, C3_size ** 2))
 
 
 for x in xrange(5,6):
-	#C1 Convolutional Layer
-
+	
+	#C1 Convolutional Layer 6@24*24
 	C1 = conv(trainingMats0[x],first_kernel, source_size, kernel_size)
+	#S2 subsampling Layer 6@12*12
 	S2 = pool(C1, C1_size)
-	# for y in xrange()
+	
+	#C3 Convolutional Layer 16@8*8
 	C3 = convcube(S2, second_kernel, S2_size, kernel_size, fk_size)
+	#S4 subsampling Layer 16@4*4
+	S4 = pool(C3, C3_size)
 
-	# pprint(C1)
+	#Full connection 
 
-# 	for y in xrange(6):
-# 		plt.subplot(1,6,y+1)
-# 		plt.imshow(C3[y].reshape(8,8), cmap='gray')
-# 		plt.axis('off')
-# plt.show()
+	# pprint(S4.shape)
+
+	for y in xrange(16):
+		plt.subplot(1,16,y+1)
+		plt.imshow(C3[y].reshape(8,8), cmap='gray')
+		plt.axis('off')
+plt.show()
