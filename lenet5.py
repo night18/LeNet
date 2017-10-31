@@ -42,11 +42,17 @@ def conv(source, kernels, source_size, kernel_size):
 		feature_map[x] = applyKernel(source, kernels[x])
 	return feature_map
 
+
+
+
 #C3 where source is a list of feature maps
-def convcube(source, kernels, source_size, kernel_size):
+def convcube(source, kernels, source_size, kernel_size, kernel_depth):
 	feature_map = zeros((len(kernels), (source_size - kernel_size + kernel_size%2)**2 ))
 	for x in xrange(len(kernels)):
-		feature_map[x] = 
+		for y in xrange(kernel_depth):
+			#TODO 1030 get the subarray or the cube kernel
+			feature_map[x] += applyKernel[]
+		
 	return feature_map
 		
 #use a 2*2 kernel to max pooling the source and jump by 2		
@@ -104,7 +110,7 @@ C1 = zeros((fk_size, C1_size ** 2 ))
 S2_size = int(C1_size/2) #12
 S2 = zeros((fk_size, S2_size ** 2)) 
 
-second_kernel = zeros((sk_size, kernel_size ** 2))
+second_kernel = zeros((sk_size, fk_size * kernel_size ** 2))
 for x in xrange(sk_size):
 	second_kernel[x] = randomKernel(fk_size * kernel_size ** 2 ) #the kernel are cubes 
 
@@ -118,8 +124,8 @@ for x in xrange(5,6):
 
 	C1 = conv(trainingMats0[x],first_kernel, source_size, kernel_size)
 	S2 = pool(C1, C1_size)
-	for y in xrange()
-	C3 = conv(S2, second_kernel, S2_size, kernel_size)
+	# for y in xrange()
+	C3 = convcube(S2, second_kernel, S2_size, kernel_size, fk_size)
 
 	# pprint(C1)
 
