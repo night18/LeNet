@@ -148,7 +148,7 @@ for x in xrange(5,6):
 	
 	#C5 Actually it is a convolutional layer 120@1*1, the kernel is 120@4*4*16 
 	C5 = convcube(S4, third_kernel, C5_kernel_size, C5_kernel_size, sk_size)
-
+	#TODO: add weight to F6
 	pprint(C5.shape)
 
 # 	for y in xrange(16):
