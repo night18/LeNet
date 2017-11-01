@@ -87,7 +87,7 @@ kernel_size = 5	#recommend use odd number
 fk_size = 6		#first kernel size
 sk_size = 16	#second kernel size
 trd_size = 120 	#third kernel size for C5
-second_nodes_size = 84 #amount of second full connection layer nodes
+F6_nodes_size = 84 #amount of F6 full connection layer nodes
 class_size = 10 #classes number
 
 #input data
@@ -123,10 +123,16 @@ for x in xrange(sk_size):
 C3_size = int(S2_size - kernel_size + kernel_size%2) #8
 C3 = zeros((sk_size, C3_size ** 2))
 
+#S4 -> C5
 C5_kernel_size = int(C3_size/2) #4 in Lenet paper, it is using 5*5, it is also S4_size
 third_kernel = zeros(( trd_size, sk_size * C5_kernel_size ** 2))
 for x in xrange(trd_size):
 	third_kernel[x] = randomKernel(sk_size * C5_kernel_size ** 2) #the kernel are cubes 4*4*16
+#C5 -> F6
+C5_F6_size = trd_size * sk_size * (C5_kernel_size ** 2) #30720 = 120 * 16 * 4 * 4 
+C5_F6_weight = zeros((F6_nodes_size, C5_F6_size )) #2580480
+for x in xrange(F6_nodes_size):
+	C5_F6_weight[x] = randomKernel(C5_F6_size)
 
 for x in xrange(5,6):
 	
@@ -140,7 +146,7 @@ for x in xrange(5,6):
 	#S4 subsampling Layer 16@4*4
 	S4 = pool(C3, C3_size)
 	
-	#C5 Actually it is a convolutional layer 120@1*1, the kernel is 120@5*5*16
+	#C5 Actually it is a convolutional layer 120@1*1, the kernel is 120@4*4*16 
 	C5 = convcube(S4, third_kernel, C5_kernel_size, C5_kernel_size, sk_size)
 
 	pprint(C5.shape)
